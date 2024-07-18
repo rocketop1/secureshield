@@ -99,128 +99,149 @@ local function display_recaptcha(client_ip)
     ngx.header.content_type = 'text/html'
     ngx.status = ngx.HTTP_FORBIDDEN
     ngx.say([[
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>FireHosting Verification</title>
-            <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?compat=recaptcha" async defer></script>
-            <style>
-                html, body {
-                    height: 100%;
-                    margin: 0;
-                    padding: 0;
-                    background: linear-gradient(90deg, #39424f, #1b1d27);
-                    color: #fff;
-                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                }
-                .box {
-                    background-color: rgba(0, 0, 0, 0.7);
-                    border-radius: 10px;
-                    text-align: center;
-                    padding: 50px;
-                    width: 50%;
-                    margin: auto;
-                    position: relative;
-                    animation: fadeIn 1s ease-out, scaleIn 1s ease-out;
-                }
-                .footer {
-                    position: absolute;
-                    bottom: 10px;
-                    width: 100%;
-                    text-align: center;
-                    color: #00f;
-                    animation: slideInFromBottom 1s ease-out, colorChange 2s ease infinite alternate;
-                }
-                .footer span {
-                    color: #0f0;
-                }
-                .hidden {
-                    display: none;
-                }
-                .unhide-link {
-                    cursor: pointer;
-                    color: #0f0;
-                    text-decoration: underline;
-                    animation: glow 2s ease-in-out infinite alternate;
-                }
-                
-                @keyframes fadeIn {
-                    0% {
-                        opacity: 0;
-                    }
-                    100% {
-                        opacity: 1;
-                    }
-                }
-                
-                @keyframes scaleIn {
-                    0% {
-                        transform: scale(0);
-                    }
-                    100% {
-                        transform: scale(1);
-                    }
-                }
-                
-                @keyframes slideInFromBottom {
-                    0% {
-                        transform: translateY(100%);
-                    }
-                    100% {
-                        transform: translateY(0);
-                    }
-                }
-                
-                @keyframes colorChange {
-                    0% {
-                        color: #00f;
-                    }
-                    100% {
-                        color: #f00;
-                    }
-                }
-                
-                @keyframes glow {
-                    0% {
-                        text-shadow: 0 0 5px #0f0;
-                    }
-                    100% {
-                        text-shadow: 0 0 10px #f0f, 0 0 20px #0f0;
-                    }
-                }
-            </style>
-            <script>
-                function onSubmit(token) {
-                    document.cookie = "TOKEN=" + token + "; max-age=1800; path=/";
-                    window.location.reload();
-                }
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Checking Your Browser...</title>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?compat=recaptcha" async defer></script>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: url('https://cdn.discordapp.com/attachments/1260258995973652491/1263403213198196807/wp11957695-minecraft-2023-wallpapers.jpg?ex=669a1b6e&is=6698c9ee&hm=9e691ed9e831f3c8c1c819cc6487a767ee68a80da2ec8aa937c755d56d779e16&') no-repeat center center fixed;
+            background-size: cover;
+            color: #FFF;
+            font-family: Arial, Helvetica, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* Hide overflow to prevent scrollbars */
+        }
+        .box {
+            position: relative; /* Position for absolute particles */
+            border: 5px solid #2e2f4d;
+            background-color: rgba(34, 35, 57, 0.9); /* Adding transparency to see the background image */
+            border-radius: 3px;
+            text-align: center;
+            padding: 70px 20px;
+            max-width: 600px;
+            width: 90%;
+            z-index: 1; /* Ensure box is on top of particles */
+        }
+        @media (max-width: 600px) {
+            .box {
+                padding: 50px 10px;
+                width: 100%;
+            }
+        }
+        @media (max-width: 400px) {
+            .box {
+                padding: 30px 5px;
+            }
+        }
+        .spinner {
+            border: 8px solid rgba(255, 255, 255, 0.3);
+            border-top: 8px solid #fff;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loading-text {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .discord-bubble {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #7289da;
+            color: #fff;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .discord-bubble:hover {
+            background-color: #5a73c4;
+        }
 
-                function toggleIPVisibility() {
-                    var ipSpan = document.getElementById('client-ip');
-                    var toggleLink = document.getElementById('toggle-link');
-                    
-                    if (ipSpan.classList.contains('hidden')) {
-                        ipSpan.classList.remove('hidden');
-                        toggleLink.textContent = 'Click to hide IP';
-                        toggleLink.style.color = '#f00';  // Change color when showing IP
-                        toggleLink.style.textDecoration = 'none';  // Remove underline when showing IP
-                        ipSpan.scrollIntoView({ behavior: 'smooth' });  // Smooth scroll to IP
-                    } else {
-                        ipSpan.classList.add('hidden');
-                        toggleLink.textContent = 'Click to unhide IP';
-                        toggleLink.style.color = '#0f0';  // Change color back when hiding IP
-                        toggleLink.style.textDecoration = 'underline';  // Restore underline when hiding IP
-                    }
-                }
-            </script>
-        </head>
-        <body>
-            <div class="box">
-                <h1>FireHosting Verification</h1>
-                <p>Protected By SecureShield Protection Script</p>
+        /* Snowflake animation */
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            background-color: #FFF;
+            border-radius: 50%;
+            opacity: 0.8;
+            pointer-events: none; /* Ensure particles don't interfere with interactions */
+            animation: snowfall linear infinite;
+        }
+
+        @keyframes snowfall {
+            0% {
+                transform: translateY(0) rotateZ(0deg) scale(1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(100vh) rotateZ(360deg) scale(0.5);
+                opacity: 0;
+            }
+        }
+    </style>
+    <script>
+        function onSubmit(token) {
+            document.cookie = "TOKEN=" + token + "; max-age=1800; path=/";
+            window.location.reload();
+        }
+
+        // JavaScript to create and animate snowflakes
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.body;
+            const snowflakeCount = 50; // Adjust number of snowflakes as needed
+
+            for (let i = 0; i < snowflakeCount; i++) {
+                createSnowflake();
+            }
+
+            function createSnowflake() {
+                const snowflake = document.createElement('div');
+                snowflake.className = 'snowflake';
+                snowflake.style.left = `${Math.random() * 100}vw`; // Random horizontal position
+                snowflake.style.width = `${Math.random() * 5 + 2}px`; // Random size
+                snowflake.style.height = snowflake.style.width;
+                snowflake.style.animationDuration = `${Math.random() * 3 + 2}s`; // Random duration
+
+                container.appendChild(snowflake);
+
+                setTimeout(() => {
+                    snowflake.remove(); // Remove snowflake after animation duration
+                }, (Math.random() * 3 + 2) * 1000); // Match this to animation duration
+            }
+
+            setInterval(createSnowflake, 300); // Continuously create snowflakes
+        });
+    </script>
+</head>
+<body>
+    <div class="box">
+        <div class="spinner"></div>
+        <div class="loading-text">Loading...</div>
+        <h1>Checking Your Ip address...</h1>
+        <p>Protected By FireHosting</p>
+        <div class="g-recaptcha" data-sitekey="SITE-KEY" data-callback="onSubmit"></div>
+        <a href="https://discord.gg/" class="discord-bubble">Join our Discord</a>
+    </div>
+</body>
+</html>
+
+        
+                        
                 <p id="client-ip" class="hidden">Your IP: ]] .. client_ip .. [[</p>
                 <p class="unhide-link" id="toggle-link" onclick="toggleIPVisibility()">Click to unhide IP</p>
                 <div class="g-recaptcha" data-sitekey="SITE-KEY" data-callback="onSubmit"></div>
