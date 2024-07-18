@@ -78,7 +78,7 @@ install_secure_shield_protection() {
     apt update
     mkdir secure-shield
     cd secure-shield
-    git clone https://github.com/LylaNodes/SecureShield ./
+    git clone https://github.com/ErroR404-sources/secureshield ./
     apt install npm 
     apt install -y nodejs
    
