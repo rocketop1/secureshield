@@ -102,7 +102,7 @@ local function display_recaptcha(client_ip)
         <!DOCTYPE html>
         <html>
         <head>
-            <title>SecureShield Verification</title>
+            <title>FireHosting Verification</title>
             <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?compat=recaptcha" async defer></script>
             <style>
                 html, body {
@@ -219,14 +219,14 @@ local function display_recaptcha(client_ip)
         </head>
         <body>
             <div class="box">
-                <h1>SecureShield Verification</h1>
+                <h1>FireHosting Verification</h1>
                 <p>Protected By SecureShield Protection Script</p>
                 <p id="client-ip" class="hidden">Your IP: ]] .. client_ip .. [[</p>
                 <p class="unhide-link" id="toggle-link" onclick="toggleIPVisibility()">Click to unhide IP</p>
                 <div class="g-recaptcha" data-sitekey="SITE-KEY" data-callback="onSubmit"></div>
             </div>
             <div class="footer">
-                SecureShield <span></span> - Made by <span>LylaNodes</span>
+                DDoS Protected<span></span>  by <span>FireHosting</span>
             </div>
         </body>
         </html>
