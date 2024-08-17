@@ -167,7 +167,7 @@ local function display_recaptcha(client_ip)
                 <p>Protected By WaveByte.xyz</p>
                 <p id="client-ip" class="hidden">Your IP: ]] .. client_ip .. [[</p>
                 <p class="unhide-link" id="toggle-link" onclick="toggleIPVisibility()">Click to unhide IP</p>
-                <div class="g-recaptcha" data-sitekey="" data-callback="onSubmit"></div>
+                <div class="g-recaptcha" data-sitekey="0x4AAAAAAAhdnNHweoJLlmPE" data-callback="onSubmit"></div>
             </div>
             <div class="footer">
                 WaveByte Shield <span></span> - Made by <span>WaveByte</span>
