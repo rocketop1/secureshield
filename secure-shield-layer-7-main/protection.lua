@@ -99,134 +99,78 @@ local function display_recaptcha(client_ip)
     ngx.header.content_type = 'text/html'
     ngx.status = ngx.HTTP_FORBIDDEN
     ngx.say([[
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>SecureShield Verification</title>
-            <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?compat=recaptcha" async defer></script>
-            <style>
-                html, body {
-                    height: 100%;
-                    margin: 0;
-                    padding: 0;
-                    background: linear-gradient(90deg, #39424f, #1b1d27);
-                    color: #fff;
-                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                }
-                .box {
-                    background-color: rgba(0, 0, 0, 0.7);
-                    border-radius: 10px;
-                    text-align: center;
-                    padding: 50px;
-                    width: 50%;
-                    margin: auto;
-                    position: relative;
-                    animation: fadeIn 1s ease-out, scaleIn 1s ease-out;
-                }
-                .footer {
-                    position: absolute;
-                    bottom: 10px;
-                    width: 100%;
-                    text-align: center;
-                    color: #00f;
-                    animation: slideInFromBottom 1s ease-out, colorChange 2s ease infinite alternate;
-                }
-                .footer span {
-                    color: #0f0;
-                }
-                .hidden {
-                    display: none;
-                }
-                .unhide-link {
-                    cursor: pointer;
-                    color: #0f0;
-                    text-decoration: underline;
-                    animation: glow 2s ease-in-out infinite alternate;
-                }
-                
-                @keyframes fadeIn {
-                    0% {
-                        opacity: 0;
-                    }
-                    100% {
-                        opacity: 1;
-                    }
-                }
-                
-                @keyframes scaleIn {
-                    0% {
-                        transform: scale(0);
-                    }
-                    100% {
-                        transform: scale(1);
-                    }
-                }
-                
-                @keyframes slideInFromBottom {
-                    0% {
-                        transform: translateY(100%);
-                    }
-                    100% {
-                        transform: translateY(0);
-                    }
-                }
-                
-                @keyframes colorChange {
-                    0% {
-                        color: #00f;
-                    }
-                    100% {
-                        color: #f00;
-                    }
-                }
-                
-                @keyframes glow {
-                    0% {
-                        text-shadow: 0 0 5px #0f0;
-                    }
-                    100% {
-                        text-shadow: 0 0 10px #f0f, 0 0 20px #0f0;
-                    }
-                }
-            </style>
-            <script>
-                function onSubmit(token) {
-                    document.cookie = "TOKEN=" + token + "; max-age=1800; path=/";
-                    window.location.reload();
-                }
-
-                function toggleIPVisibility() {
-                    var ipSpan = document.getElementById('client-ip');
-                    var toggleLink = document.getElementById('toggle-link');
-                    
-                    if (ipSpan.classList.contains('hidden')) {
-                        ipSpan.classList.remove('hidden');
-                        toggleLink.textContent = 'Click to hide IP';
-                        toggleLink.style.color = '#f00';  // Change color when showing IP
-                        toggleLink.style.textDecoration = 'none';  // Remove underline when showing IP
-                        ipSpan.scrollIntoView({ behavior: 'smooth' });  // Smooth scroll to IP
-                    } else {
-                        ipSpan.classList.add('hidden');
-                        toggleLink.textContent = 'Click to unhide IP';
-                        toggleLink.style.color = '#0f0';  // Change color back when hiding IP
-                        toggleLink.style.textDecoration = 'underline';  // Restore underline when hiding IP
-                    }
-                }
-            </script>
-        </head>
-        <body>
-            <div class="box">
-                <h1>SecureShield Verification</h1>
-                <p>Protected By SecureShield Protection Script</p>
+       <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WaveByte</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.7)), 
+                        url('https://image.api.playstation.com/vulcan/ap/rnd/202212/2018/GMXm533aVo9ZNp5l6ofFV6oD.jpg') no-repeat center center fixed;
+            background-size: cover;
+            justify-content: center;
+            align-items: center;
+            color: #e0e0e0; /* Light text color */
+        }
+        .login-container {
+            background-color: #1f1f1f; /* Slightly lighter dark background */
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 360px;
+            padding: 20px;
+            text-align: center;
+        }
+        .login-container h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #ffffff; /* White text color */
+        }
+        .login-btn {
+            display: inline-block;
+            background-color: #7289da; /* Discord color */
+            color: #ffffff;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            text-transform: uppercase;
+        }
+        .login-btn:hover {
+            background-color: #5b6eae;
+        }
+        .links {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        .links a {
+            color: #1e90ff; /* Light blue color */
+            text-decoration: none;
+        }
+        .links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+  <h1>WaveByte Shield</h1>
+                <p>Protected By WaveByte.xyz</p>
                 <p id="client-ip" class="hidden">Your IP: ]] .. client_ip .. [[</p>
                 <p class="unhide-link" id="toggle-link" onclick="toggleIPVisibility()">Click to unhide IP</p>
-                <div class="g-recaptcha" data-sitekey="SITE-KEY" data-callback="onSubmit"></div>
+                <div class="g-recaptcha" data-sitekey="" data-callback="onSubmit"></div>
             </div>
             <div class="footer">
-                SecureShield <span></span> - Made by <span>LylaNodes</span>
+                WaveByte Shield <span></span> - Made by <span>WaveByte</span>
             </div>
         </body>
         </html>
