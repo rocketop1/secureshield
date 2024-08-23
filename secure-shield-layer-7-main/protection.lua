@@ -36,7 +36,7 @@ end
 local function generate_random_token()
     local charset = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
     local token = ""
-    for i = 1, 8 do
+    for i = 1, 16 do
         local index = math.random(1, #charset)
         token = token .. charset:sub(index, index)
     end
@@ -45,47 +45,45 @@ end
 
 local function set_cookie()
     local token = generate_random_token()
-    ngx.header['Set-Cookie'] = 'TOKEN=' .. token .. '; path=/; max-age=1800; HttpOnly'
+    ngx.header['Set-Cookie'] = 'TOKEN=' .. token .. '; path=/; max-age=3600; HttpOnly'
 end
 
 local function delete_cookie()
     ngx.header['Set-Cookie'] = 'TOKEN=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly'
 end
 
-local adaptive_rate_limits = {}  
-local blocked_ips = {}  
-local redirect_duration = 30  
+local adaptive_rate_limits = {}
+local blocked_ips = {}
+local redirect_duration = 30
 
 local limit_dict = ngx.shared.secure_shield_limit_dict
 
 local function rate_limit_ip(ip)
     if blocked_ips[ip] then
-        return true  
+        return true
     end
 
     local key = "rate:" .. ip
-    local current, err = limit_dict:get(key)
+    local current = limit_dict:get(key)
 
-  
     if adaptive_rate_limits[ip] then
         if current and current >= adaptive_rate_limits[ip] then
-            blocked_ips[ip] = true 
+            blocked_ips[ip] = true
             ngx.log(ngx.ERR, "IP " .. ip .. " blocked due to suspected DDoS attack")
-            return true 
+            return true
         else
             limit_dict:incr(key, 1)
         end
     else
-    
         if current then
             if current >= 1000 then
-                adaptive_rate_limits[ip] = current + 500  
-                return true  
+                adaptive_rate_limits[ip] = current + 500
+                return true
             else
                 limit_dict:incr(key, 1)
             end
         else
-            local success, err, forcible = limit_dict:set(key, 1, 60)
+            local success, err = limit_dict:set(key, 1, 60)
             if not success then
                 ngx.log(ngx.ERR, "Failed to set rate limit for key: " .. key .. ", error: " .. err)
             end
@@ -116,10 +114,10 @@ local function display_recaptcha(client_ip)
             background-size: cover;
             justify-content: center;
             align-items: center;
-            color: #e0e0e0; /* Light text color */
+            color: #e0e0e0;
         }
         .login-container {
-            background-color: #1f1f1f; /* Slightly lighter dark background */
+            background-color: #1f1f1f;
             border-radius: 8px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
             width: 100%;
@@ -130,11 +128,11 @@ local function display_recaptcha(client_ip)
         .login-container h1 {
             margin: 0;
             font-size: 24px;
-            color: #ffffff; /* White text color */
+            color: #ffffff;
         }
         .login-btn {
             display: inline-block;
-            background-color: #7289da; /* Discord color */
+            background-color: #7289da;
             color: #ffffff;
             text-decoration: none;
             padding: 12px 24px;
@@ -154,7 +152,7 @@ local function display_recaptcha(client_ip)
             font-size: 14px;
         }
         .links a {
-            color: #1e90ff; /* Light blue color */
+            color: #1e90ff;
             text-decoration: none;
         }
         .links a:hover {
@@ -307,7 +305,7 @@ local function main()
 
     if ip_in_list(client_ip, whitelist) then
         ngx.log(ngx.ERR, "Client IP is whitelisted: " .. client_ip)
-        set_cookie()  
+        set_cookie()
         return
     end
 
@@ -325,16 +323,18 @@ local function main()
         return
     end
 
-    if limit_dict:get("rate:" .. client_ip) >= 1000 then
+    local rate = limit_dict:get("rate:" .. client_ip)
+    if rate and rate >= 1000 then
+        ngx.log(ngx.ERR, "Rate limit threshold reached for IP: " .. client_ip)
         redirect_ip(client_ip)
         return
     end
 
     if ngx.var.cookie_TOKEN then
         local token = ngx.var.cookie_TOKEN
-        if #token >= 5 then
+        if #token >= 16 then
             ngx.log(ngx.ERR, "Valid token cookie found")
-            return 
+            return
         else
             ngx.log(ngx.ERR, "Invalid token length, removing cookie")
             delete_cookie()
